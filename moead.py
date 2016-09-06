@@ -65,9 +65,7 @@ class MOEAD(object):
             self.toolbox.mutate
         except Exception as e:
             print "Error in MOEAD.__init__: toolbox.mutate or toolbox.mate is not assigned."
-            raise e
-                     
-        self.dataDirectory_ = str() # Path to inputs, will maybe not be needed.
+            raise e                     
 
         ### Additional stuff not from JMetal implementation
         
@@ -86,7 +84,7 @@ class MOEAD(object):
         else:
             self.maxEvaluations = maxEvaluations
         
-        self.dataDirectory = dataDirectory
+        self.dataDirectory_ = dataDirectory
         self.functionType_ = "_TCHE1"
         self.stats = stats
         self.verbose = verbose
@@ -125,7 +123,6 @@ class MOEAD(object):
         if self.verbose: print logbook.stream
         
         while self.evaluations_ < self.maxEvaluations:
-            print "n_evals", self.evaluations_, "/", self.maxEvaluations
             permutation = [None] * self.populationSize_ # Of type int
             self.randomPermutations(permutation, self.populationSize_)
 
@@ -191,25 +188,39 @@ class MOEAD(object):
     " initUniformWeight
     """
     def initUniformWeight(self):
-        if self.n_objectives == 2 and self.populationSize_ <= 300:
+        """
+        Precomputed weights from (Zhang, Multiobjective Optimization Problems With Complicated Pareto Sets, MOEA/D and NSGA-II) downloaded from: http://dces.essex.ac.uk/staff/qzhang/MOEAcompetition/CEC09final/code/ZhangMOEADcode/moead030510.rar)
+        
+        """
+        if self.n_objectives == 2: 
             for n in xrange(self.populationSize_):
                 a = 1.0 * float(n) / (self.populationSize_ - 1)
                 self.lambda_[n][0] = a
                 self.lambda_[n][1] = 1 - a
         else:
-            dataFi1leName = "W" + self.n_objectives + "D_" + self.populationSize_ + ".dat"
+            dataFileName = "W" + str(self.n_objectives) + "D_" + str(self.populationSize_) + ".dat"
             file_ = self.dataDirectory_ + "/" + dataFileName
             try:
                 with open(file_, 'r') as f:
                     numberOfObjectives = 0
                     i = 0
-                    j = 0
-                    for aux in f:
+                    for aux_ in f:
+                        j = 0
+                        aux = aux_.strip()
                         tokens = aux.split(" ")
                         n_objectives = len(tokens)
-                        for value in tokens:
-                            self.lambda_[i][j] = value
-                            j += 1
+                        try:
+                            for value in tokens:
+                                self.lambda_[i][j] = float(value)
+                                j += 1
+                        except Exception as e:
+                            print "Error loading floats as weight vectors"
+                            print "tokens", tokens
+                            print "value:",  value
+                            print "lambda_", len(self.lambda_),"*",len(self.lambda_[0])
+                            print i, j, aux_
+                            print e
+                            raise e
                         i += 1
                 f.close()
             except Exception as e:
@@ -357,15 +368,13 @@ class MOEAD(object):
 
         if self.functionType_ == "_TCHE1":
             maxFun = -1.0e+30 
-            for n in xrange(self.n_objectives):
-                
-                diff = abs(individual.fitness.values[n]   - self.z_[n]) # JMetal default
+            for n in xrange(self.n_objectives):                
+                diff = abs(individual.fitness.values[n] - self.z_[n]) # JMetal default
                 feval = float()
                 if lambda_[n] == 0:
                     feval = 0.0001 * diff
                 else:
                     feval =  diff * lambda_[n]
-                #feval = feval * individual.fitness.weights[n]
 
                 if feval > maxFun:
                     maxFun = feval
@@ -436,35 +445,3 @@ class MOEAD(object):
 
     #######################################################################
     #######################################################################
-
-    
-if __name__ == "__init__":
-    # create a Logger
-
-
-    
-    populationSize = 300
-    maxEvaluations = 150000
-
-    finalSize = 300 # Used by MOAD_DRA
-
-    T = 20
-    delta = 0.9
-    nr = 2
-
-    CR = 1.0
-    F = 0.5
-
-    # Set up toolbox
-    # set mate
-    # set mutate
-
-    initTime = time.time()
-
-    # execute
-    algorithm = MOEAD()
-    algorithm.execute()
-
-    estimatedTime = time.time() - initTime
-
-    # ... log rest of that stuff
