@@ -9,9 +9,14 @@ The code in moead.py is a port of the MOEA/D algorithm provided by jmetal.metahe
 
 ## What's in here?
 
-***moead.py*** - The class implementing the MOEA/D algorithm. Once the class MOEAD has been initialized, the algorithm can be executed with the *execute()*method.
+***moead.py*** - The class implementing the MOEA/D algorithm. Once the class MOEAD has been initialized, the algorithm can be executed with the *execute()* method.
 
-***knapsack.py*** - An example of the multi-objective knapsack optimization problem. The original code is borrowed from DEAP (http://deap.readthedocs.io/en/master/examples/ga_knapsack.html) with modifications to use *moead.py*.
+***knapsack.py*** - An example of the multi-objective knapsack optimization problem. The original code is borrowed from DEAP (http://deap.readthedocs.io/en/master/examples/ga_knapsack.html) with modifications to use *moead.py*. You can run the example with:
+```
+python knapsack.py <SEED> 
+```
+
+Where <SEED> is an optional integer for randomized execution.
 
 ## Status
 
