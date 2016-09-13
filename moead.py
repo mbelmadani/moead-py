@@ -1,8 +1,20 @@
 """
-Documentation
+moead.py
 
+Description:
 
+A Python implementation of the decomposition based multi-objective evolutionary algorithm (MOEA/D).
 
+MOEA/D is described in the following publication: Zhang, Q. & Li, H. MOEA/D: A Multiobjective Evolutionary Algorithm Based on Decomposition. IEEE Trans. Evol. Comput. 11, 712-731 (2007).
+
+The code in moead.py is a port of the MOEA/D algorithm provided by jmetal.metaheuristics.moead.MOEAD.java from the JMetal Java multi-objective metaheuristic algorithm framework (http://jmetal.sourceforge.net/). The JMetal specific functions have been converted to the DEAP (Distributed Evolutionary Algorithms in Python, http://deap.readthedocs.io/en/master/) equivalence.
+
+The current version works for the knapsack example and appears to show adequate exploration of the pareto front solutions. It would be preferable to test additional problems to determine whether this works as intended different MOEA requirements (problems different combinations of maximization and minimization objective functions, for example.)
+
+Note also that weight vectors are only computed for populations of size 2 or 3. Problems with 4 or more objectives will requires a weights file in the "weights" directory. Weights can be downloaded from: http://dces.essex.ac.uk/staff/qzhang/MOEAcompetition/CEC09final/code/ZhangMOEADcode/moead030510.rar
+
+Author: Manuel Belmadani <mbelm006@uottawa.ca>
+Date  : 2016-09-05
 
 """
 from exceptions import NotImplementedError
@@ -197,6 +209,19 @@ class MOEAD(object):
                 a = 1.0 * float(n) / (self.populationSize_ - 1)
                 self.lambda_[n][0] = a
                 self.lambda_[n][1] = 1 - a
+        elif self.n_objectives == 3:
+            """
+            Ported from Java code written by Wudong Liu 
+            (Source: http://dces.essex.ac.uk/staff/qzhang/moead/moead-java-source.zip)
+            """
+            m = self.populationSize_
+            for i in xrange(m):
+                for j in xrange(m):
+                    if i+j <= m:
+                        k = m - i - j
+                        self.lambda_[n][0] = float(i) / m
+                        self.lambda_[n][1] = float(j) / m
+                        self.lambda_[n][2] = float(k) / m                
         else:
             dataFileName = "W" + str(self.n_objectives) + "D_" + str(self.populationSize_) + ".dat"
             file_ = self.dataDirectory_ + "/" + dataFileName
