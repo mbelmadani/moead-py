@@ -216,6 +216,7 @@ class MOEAD(object):
             (Source: http://dces.essex.ac.uk/staff/qzhang/moead/moead-java-source.zip)
             """
             m = self.populationSize_
+
             self.lambda_ = list()
             for i in xrange(m):
                 for j in xrange(m):
@@ -237,7 +238,6 @@ class MOEAD(object):
             # Trim number of weights to fit population size
             self.lambda_ = sorted((x for x in self.lambda_), key=lambda x: sum(x), reverse=True)
             self.lambda_ = self.lambda_[:self.populationSize_]
-                        
         else:
             dataFileName = "W" + str(self.n_objectives) + "D_" + str(self.populationSize_) + ".dat"
             file_ = self.dataDirectory_ + "/" + dataFileName
