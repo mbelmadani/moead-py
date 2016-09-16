@@ -1,8 +1,20 @@
 """
-Documentation
+moead.py
 
+Description:
 
+A Python implementation of the decomposition based multi-objective evolutionary algorithm (MOEA/D).
 
+MOEA/D is described in the following publication: Zhang, Q. & Li, H. MOEA/D: A Multiobjective Evolutionary Algorithm Based on Decomposition. IEEE Trans. Evol. Comput. 11, 712-731 (2007).
+
+The code in moead.py is a port of the MOEA/D algorithm provided by jmetal.metaheuristics.moead.MOEAD.java from the JMetal Java multi-objective metaheuristic algorithm framework (http://jmetal.sourceforge.net/). The JMetal specific functions have been converted to the DEAP (Distributed Evolutionary Algorithms in Python, http://deap.readthedocs.io/en/master/) equivalence.
+
+The current version works for the knapsack example and appears to show adequate exploration of the pareto front solutions. It would be preferable to test additional problems to determine whether this works as intended different MOEA requirements (problems different combinations of maximization and minimization objective functions, for example.)
+
+Note also that weight vectors are only computed for populations of size 2 or 3. Problems with 4 or more objectives will requires a weights file in the "weights" directory. Weights can be downloaded from: http://dces.essex.ac.uk/staff/qzhang/MOEAcompetition/CEC09final/code/ZhangMOEADcode/moead030510.rar
+
+Author: Manuel Belmadani <mbelm006@uottawa.ca>
+Date  : 2016-09-05
 
 """
 from exceptions import NotImplementedError
@@ -88,7 +100,8 @@ class MOEAD(object):
         self.functionType_ = "_TCHE1"
         self.stats = stats
         self.verbose = verbose
-        ### Stuff brough up from the execute function
+
+        ### Code brough up from the execute function
         self.T_ = T
         self.delta_ = delta
         
@@ -168,7 +181,6 @@ class MOEAD(object):
                 # TODO: Add this as an option to repair invalid individuals?
 
                 # STEP 2.4: Update z_
-                # TODO: Child should be an offspring. Termination should also not be described by evaluations of individuals.
                 for child in offspring:
                     self.updateReference(child)
 
@@ -189,7 +201,8 @@ class MOEAD(object):
     """
     def initUniformWeight(self):
         """
-        Precomputed weights from (Zhang, Multiobjective Optimization Problems With Complicated Pareto Sets, MOEA/D and NSGA-II) downloaded from: http://dces.essex.ac.uk/staff/qzhang/MOEAcompetition/CEC09final/code/ZhangMOEADcode/moead030510.rar)
+        Precomputed weights from (Zhang, Multiobjective Optimization Problems With Complicated Pareto Sets, MOEA/D and NSGA-II) downloaded from: 
+        http://dces.essex.ac.uk/staff/qzhang/MOEAcompetition/CEC09final/code/ZhangMOEADcode/moead030510.rar)
         
         """
         if self.n_objectives == 2: 
@@ -197,6 +210,34 @@ class MOEAD(object):
                 a = 1.0 * float(n) / (self.populationSize_ - 1)
                 self.lambda_[n][0] = a
                 self.lambda_[n][1] = 1 - a
+        elif self.n_objectives == 3:
+            """
+            Ported from Java code written by Wudong Liu 
+            (Source: http://dces.essex.ac.uk/staff/qzhang/moead/moead-java-source.zip)
+            """
+            m = self.populationSize_
+            self.lambda_ = list()
+            for i in xrange(m):
+                for j in xrange(m):
+                    if i+j <= m:
+                        k = m - i - j
+                        try:
+                            weight_scalars = [None] * 3
+                            weight_scalars[0] = float(i) / (m)
+                            weight_scalars[1] = float(j) / (m)
+                            weight_scalars[2] = float(k) / (m)
+                            self.lambda_.append(weight_scalars)
+                        except Exception as e:
+                            print "Error creating weight with 3 objectives at:"
+                            print "count", count
+                            print "i", i
+                            print "j", j
+                            print "k", k
+                            raise e
+            # Trim number of weights to fit population size
+            self.lambda_ = sorted((x for x in self.lambda_), key=lambda x: sum(x), reverse=True)
+            self.lambda_ = self.lambda_[:self.populationSize_]
+                        
         else:
             dataFileName = "W" + str(self.n_objectives) + "D_" + str(self.populationSize_) + ".dat"
             file_ = self.dataDirectory_ + "/" + dataFileName
