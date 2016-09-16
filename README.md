@@ -20,7 +20,7 @@ Where <SEED> is an optional integer for randomized execution. <OBJECTIVES> is ei
 
 ## Status
 
-The current version works for the knapsack example and appears to show adequate exploration of the pareto front solutions. It would be preferable to test additional problems to determine whether this works as intended different MOEA requirements (problems different combinations of maximization and minimization objective functions, for example.)
+The current version works with 2 or 3 objectives and more than 3 objectives if a weight file is provided. The algorithm has been tested on the knapsack examples (knapsack.py) provided above.
 
 ## Support and contributions
 
