@@ -92,7 +92,7 @@ def main(objectives=2, seed=64):
     elif objectives == 3:
         creator.create("Fitness", base.Fitness, weights=(-1.0, 1.0, -1.0))
     else:
-        print "No evaluation function available for", objectives, "objectives."
+        print("No evaluation function available for", objectives, "objectives.")
         sys.exit(-1)
 
         
@@ -113,7 +113,7 @@ def main(objectives=2, seed=64):
     elif objectives == 3:
         toolbox.register("evaluate", evalKnapsackBalanced)
     else:
-        print "No evaluation function available for", objectives, "objectives."
+        print("No evaluation function available for", objectives, "objectives.")
         sys.exit(-1)
         
 
@@ -158,8 +158,8 @@ if __name__ == "__main__":
 
     pop = [str(p) +" "+ str(p.fitness.values) for p in pop]
     hof = [str(h) +" "+ str(h.fitness.values) for h in hof]
-    print "POP:"
-    print "\n".join(pop)
+    print("POP:")
+    print("\n".join(pop))
 
-    print "PF:"
-    print "\n".join(hof)
+    print("PF:")
+    print("\n".join(hof))
