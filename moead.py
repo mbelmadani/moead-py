@@ -32,11 +32,11 @@ from copy import deepcopy
 class MOEAD(object):
 
     def __init__(self, population, toolbox, mu, cxpb, mutpb, ngen=0, max_evaluations=0,
-                 t=20, nr=2, delta=0.9, stats=None, halloffame=None, verbose=__debug__, data_directory="weights"):
+    t=20, nr=2, delta=0.9, stats=None, halloffame=None, verbose=__debug__, data_directory="weights"):
 
         self.populationSize_ = int(0)
 
-        # Reference the DEAP toolbox to the algorithm 
+        # Reference the DEAP toolbox to the algorithm
         self.toolbox = toolbox
 
         # Stores the population
@@ -50,7 +50,7 @@ class MOEAD(object):
 
             self.populationSize_ = mu
 
-        # Reference the DEAP toolbox to the algorithm 
+        # Reference the DEAP toolbox to the algorithm
         self.toolbox = toolbox
 
         # Z vector (ideal point)
@@ -208,7 +208,7 @@ class MOEAD(object):
         Precomputed weights from (Zhang, Multiobjective Optimization Problems With Complicated Pareto Sets, MOEA/D and
                                   NSGA-II) downloaded from:
         http://dces.essex.ac.uk/staff/qzhang/MOEAcompetition/CEC09final/code/ZhangMOEADcode/moead030510.rar)
-        
+
         """
         if self.n_objectives == 2:
             for n in range(0, self.populationSize_):
@@ -217,7 +217,7 @@ class MOEAD(object):
                 self.lambda_[n][1] = 1 - a
         elif self.n_objectives == 3:
             """
-            Ported from Java code written by Wudong Liu 
+            Ported from Java code written by Wudong Liu
             (Source: http://dces.essex.ac.uk/staff/qzhang/moead/moead-java-source.zip)
             """
             m = self.populationSize_
@@ -272,7 +272,7 @@ class MOEAD(object):
                 print(e)
                 raise e
 
-    """ 
+    """
     " initNeighbourhood
     """
 
@@ -298,7 +298,7 @@ class MOEAD(object):
             # generated solutions
             # evaluate solutions
             self.evaluations_ += 1
-            # add solution to population           
+            # add solution to population
         raise NotImplementedError
 
     """
@@ -325,7 +325,7 @@ class MOEAD(object):
         # size   : the number of selected mating parents
         # type   : 1 - neighborhood; otherwise - whole population
         """
-        Selects 'size' distinct parents, 
+        Selects 'size' distinct parents,
         either from the neighbourhood (type=1) or the populaton (type=2).
         """
 
@@ -439,7 +439,7 @@ class MOEAD(object):
         x   : list of floats
         idx : list of integers (each an index)
         n   : integer
-        m   : integer        
+        m   : integer
         """
         for i in range(0, m):
             for j in range(i + 1, n):
@@ -457,7 +457,7 @@ class MOEAD(object):
         perm : int list
         size : int
         Picks position for 1 to size at random and increments when value is already picked.
-        Updates reference to perm 
+        Updates reference to perm
         """
         index = [None] * size
         flag = [None] * size
