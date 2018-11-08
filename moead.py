@@ -32,7 +32,7 @@ from copy import deepcopy
 class MOEAD(object):
 
     def __init__(self, population, toolbox, mu, cxpb, mutpb, ngen=0, max_evaluations=0,
-    t=20, nr=2, delta=0.9, stats=None, halloffame=None, verbose=__debug__, data_directory="weights"):
+                 t=20, nr=2, delta=0.9, stats=None, halloffame=None, verbose=__debug__, data_directory="weights"):
 
         self.populationSize_ = int(0)
 
@@ -277,13 +277,13 @@ class MOEAD(object):
     """
 
     def init_neighborhood(self):
-        x = [None] * self.populationSize_  # Of type float
-        idx = [None] * self.populationSize_  # Of type int
+        x = []  # Of type float
+        idx = []  # Of type int
 
         for i in range(0, self.populationSize_):
             for j in range(0, self.populationSize_):
-                x[j] = self.dist_vector(self.lambda_[i], self.lambda_[j])
-                idx[j] = j
+                x.append(self.dist_vector(self.lambda_[i], self.lambda_[j]))
+                idx.append(j)
 
             self.min_fast_sort(x, idx, self.populationSize_, self.T_)
             self.neighbourhood_[i][0:self.T_] = idx[0:self.T_]  # System.arraycopy(idx, 0, neighbourhood_[i], 0, T_)
@@ -459,11 +459,11 @@ class MOEAD(object):
         Picks position for 1 to size at random and increments when value is already picked.
         Updates reference to perm
         """
-        index = [None] * size
-        flag = [None] * size
-        for n in range(size):
-            index[n] = n
-            flag[n] = True
+        index = []
+        flag = []
+        for n in range(0, size):
+            index.append(n)
+            flag.append(True)
 
         num = 0
         while num < size:
