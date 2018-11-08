@@ -90,4 +90,4 @@ ENV/
 .ropeproject
 
 # VSCodefile
-./vscode
+.vscode/
