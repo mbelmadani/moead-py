@@ -86,17 +86,17 @@ def mut_set(individual):
     return individual,
 
 
-def main(objectives=2, seed=64):
-    random.seed(seed)
+def main(objectives_=2, seed_=64):
+    random.seed(seed_)
 
     # Create the item dictionary: item name is an integer, and value is 
     # a (weight, value) 2-uple.
-    if objectives == 2:
+    if objectives_ == 2:
         creator.create("Fitness", base.Fitness, weights=(-1.0, 1.0))
-    elif objectives == 3:
+    elif objectives_ == 3:
         creator.create("Fitness", base.Fitness, weights=(-1.0, 1.0, -1.0))
     else:
-        print("No evaluation function available for", objectives, "objectives.")
+        print("No evaluation function available for", objectives_, "objectives.")
         sys.exit(-1)
 
     creator.create("Individual", set, fitness=creator.Fitness)
@@ -111,22 +111,22 @@ def main(objectives=2, seed=64):
                      toolbox.attr_item, IND_INIT_SIZE)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
-    if objectives == 2:
+    if objectives_ == 2:
         toolbox.register("evaluate", eval_knapsack)
-    elif objectives == 3:
+    elif objectives_ == 3:
         toolbox.register("evaluate", eval_knapsack_balanced)
     else:
-        print("No evaluation function available for", objectives, "objectives.")
+        print("No evaluation function available for", objectives_, "objectives.")
         sys.exit(-1)
 
     toolbox.register("mate", cx_set)
     toolbox.register("mutate", mut_set)
     toolbox.register("select", tools.selNSGA2)
 
-    pop = toolbox.population(n=MU)
-    hof = tools.ParetoFront()
+    pop_ = toolbox.population(n=MU)
+    hof_ = tools.ParetoFront()
 
-    stats = {}
+    stats_ = {}
 
     def lambda_factory(idx):
         return lambda ind: ind.fitness.values[idx]
@@ -136,18 +136,18 @@ def main(objectives=2, seed=64):
         s = tools.Statistics(key=lambda_factory(
             fitness_tags.index(tag)
         ))
-        stats[tag] = s
+        stats_[tag] = s
 
-    mstats = tools.MultiStatistics(**stats)
+    mstats = tools.MultiStatistics(**stats_)
     mstats.register("avg", numpy.mean, axis=0)
     mstats.register("std", numpy.std, axis=0)
     mstats.register("min", numpy.min, axis=0)
     mstats.register("max", numpy.max, axis=0)
 
-    ea = MOEAD(pop, toolbox, MU, CXPB, MUTPB, ngen=NGEN, stats=mstats, halloffame=hof, nr=LAMBDA)
-    pop = ea.execute()
+    ea = MOEAD(pop_, toolbox, MU, CXPB, MUTPB, ngen=NGEN, stats=mstats, halloffame=hof_, nr=LAMBDA)
+    pop_ = ea.execute()
 
-    return pop, stats, hof
+    return pop_, stats_, hof_
 
 
 if __name__ == "__main__":
