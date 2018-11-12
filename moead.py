@@ -26,6 +26,7 @@ from deap import tools
 
 import random
 import math
+import numpy as np
 from copy import deepcopy
 
 
@@ -416,6 +417,15 @@ class MOEAD(object):
                     max_fun = feval
 
             fitness = max_fun
+        elif self.functionType_ == '_PBI':
+            min_fun = 1.0e+30
+            z_star = np.array(self.z_)
+            f_x = np.array(individual.fitness.values)
+            d1 = abs(np.dot(z_star - f_x, lambda_)) / np.linalg.norm(lambda_)
+            d2 = np.linalg.norm(f_x - z_star + np.dot(d1, lambda_))
+            if min_fun > d1 + d2:
+                min_fun = d1 + d2
+            fitness = min_fun
         else:
             print("MOEAD.fitnessFunction: unknown type", self.functionType_)
             raise NotImplementedError
