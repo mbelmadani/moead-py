@@ -123,7 +123,7 @@ class MOEAD(object):
         self.z_ = self.n_objectives * [None]
         
         #2-D list  Of size populationSize_ x Number of objectives. Used for weight vectors.
-        self.lambda_ = [[None] * self.n_objectives] * self.populationSize_ 
+        self.lambda_ = [[None for _ in range(self.n_objectives)] for i in range(self.populationSize_)]
 
         # STEP 1. Initialization
         self.initUniformWeight()
